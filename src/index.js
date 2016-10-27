@@ -1,16 +1,29 @@
-import React from 'react'
-import { Router, Route, Link, browserHistory } from 'react-router'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-// import todoApp from './reducers'
-import App from './components/App'
+import React from 'react';
+import { render } from 'react-dom';
+import { AppContainer } from 'react-hot-loader';
+import promise from 'es6-promise';
+import 'isomorphic-fetch';
 
-// let store = createStore(todoApp)
+import App from './routes.js';
 
-render((
-    <Router history={browserHistory}>
-      <Route path="/" component={App} />
-    </Router>
-  ),
-  document.getElementById('root'))
+promise.polyfill();
+
+render(
+    <AppContainer>
+        <App />
+    </AppContainer>,
+    document.getElementById('app')
+);
+
+if (module.hot) {
+    module.hot.accept('./routes.js', ()=> {
+        const NextApp = require('./routes.js').default;
+        render(
+            <AppContainer>
+                <NextApp />
+            </AppContainer>,
+            document.getElementById('app')
+        );
+    });
+}
+
